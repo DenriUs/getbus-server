@@ -1,7 +1,9 @@
 enum Roles {
     Customer,
+    BusDriver,
     Dispatcher,
-    Driver,
+    SupportWorker,
     Administrator,
 }
+
 export default Roles;

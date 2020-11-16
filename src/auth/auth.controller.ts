@@ -1,7 +1,7 @@
-import { BadRequestException, Body, Controller, Get, Post, UnauthorizedException } from '@nestjs/common';
-import User from 'src/entity/User';
+import { BadRequestException, Body, Controller, Get, Post } from '@nestjs/common';
+import User from '../entity/User';
 import UserService from '../user/user.service';
-import { ForAuthorized, ForRoles, GetUser } from './auth.decorators';
+import { ForAuthorized, ForRoles } from './auth.decorators';
 import AuthService from './auth.service';
 import Roles from './roles';
 
@@ -14,15 +14,15 @@ export default class AuthController {
 
   @Post('login')
   async login(
-    @Body('login') login: string,
+    @Body('email') email: string,
     @Body('password') password: string,
   ): Promise<{ accessToken: string }> {
-    if (!login || !password) {
+    if (!email || !password) {
       throw new BadRequestException();
     }
-    const user = await this.userService.getByEmail(login);
+    const user = await this.userService.getByEmail(email);
     if (!user || !await this.userService.checkPassword(password, user.password)) {
-      throw new UnauthorizedException('Неправильний логін або пароль');
+      throw new BadRequestException('Неправильний логін або пароль');
     }
     return { accessToken: await this.authService.login(user) };
   }
@@ -35,11 +35,21 @@ export default class AuthController {
     await this.authService.register(userFromBody);
   }
 
-  @Get('test')
   @ForAuthorized()
-  @ForRoles(Roles.Customer)
-  getTest(@GetUser() user: User): { user: User } {
-    return { user };
+  @ForRoles(Roles.Administrator)
+  @Post('registerWorker')
+  async registerWorker(@Body() userFromBody: User): Promise<void> {
+    if (!userFromBody.role || userFromBody.role === Roles.Administrator) {
+      throw new BadRequestException();
+    }
+    await this.verifyRegistrationData(userFromBody);
+    await this.authService.register(userFromBody);
+  }
+
+  @ForAuthorized()
+  @Get('checkLoginStatus')
+  getTest(): { loginStatus: boolean  } {
+    return { loginStatus: true };
   }
 
   private async verifyRegistrationData(user: User) {

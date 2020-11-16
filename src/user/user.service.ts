@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { compare } from 'bcrypt';
 import User from '../entity/User';
-import Roles from 'src/auth/roles';
+import Roles from '../auth/roles';
 
 @Injectable()
 export default class UserService {
@@ -12,12 +12,16 @@ export default class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async create(user: User): Promise<void> {
-    await this.userRepository.save(user);
+  create(user: User): Promise<User> {
+    return this.userRepository.save(user);
   }
 
-  async update(user: User): Promise<void> {
-    await this.userRepository.update(user.id, user);
+  update(user: User): Promise<UpdateResult> {
+    return this.userRepository.update(user.id, user);
+  }
+
+  deleteById(userId: string): Promise<DeleteResult> {
+    return this.userRepository.delete(userId);
   }
 
   getById(id: string): Promise<User | undefined> {
