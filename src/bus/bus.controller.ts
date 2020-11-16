@@ -37,7 +37,7 @@ export default class BusController {
   }
 
   @Post('delete')
-  async register(@Body() busId: number): Promise<void> {
+  async delete(@Body() busId: number): Promise<void> {
     try {
       if (!await this.busService.getById(busId)) {
         throw new NotFoundException();

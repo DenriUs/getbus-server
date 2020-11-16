@@ -35,7 +35,7 @@ export default class SupportRequestController {
   }
 
   @Post('delete')
-  async register(@Body() supportRequestId: number): Promise<void> {
+  async delete(@Body() supportRequestId: number): Promise<void> {
     try {
       if (!await this.supportRequestService.getById(supportRequestId)) {
         throw new NotFoundException();

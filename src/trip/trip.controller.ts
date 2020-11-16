@@ -37,7 +37,7 @@ export default class TripController {
   }
 
   @Post('delete')
-  async register(@Body() tripId: number): Promise<void> {
+  async delete(@Body() tripId: number): Promise<void> {
     try {
       if (!await this.tripService.getById(tripId)) {
         throw new NotFoundException();

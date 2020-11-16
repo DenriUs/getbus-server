@@ -35,7 +35,7 @@ export default class TicketController {
   }
 
   @Post('delete')
-  async register(@Body() ticketId: number): Promise<void> {
+  async delete(@Body() ticketId: number): Promise<void> {
     try {
       if (!await this.ticketService.getById(ticketId)) {
         throw new NotFoundException();
