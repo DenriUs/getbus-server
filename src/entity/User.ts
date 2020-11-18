@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { IsEmail, IsNotEmpty, IsPassportNumber, IsPhoneNumber } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsPhoneNumber } from 'class-validator';
 import Roles from '../auth/roles';
 import Trip from './Trip';
 import SupportRequest from './SupportRequest';
@@ -20,7 +20,7 @@ export default class User {
   lastName!: string;
 
   @Column()
-  birthDate?: string;
+  birthDate!: Date;
 
   @IsNotEmpty()
   @IsEmail()
@@ -32,15 +32,14 @@ export default class User {
   password!: string;
 
   @IsNotEmpty()
-  @IsPhoneNumber('UA')
+  @Column()
+  passportNo!: string;
+
+  @IsNotEmpty()
+  @IsPhoneNumber('UA', { message: 'Введіть коректний номер телефону' })
   @Column()
   phoneNumber!: string;
 
-  @IsPassportNumber('UA')
-  @Column()
-  passportNo?: string;
-
-  @IsNotEmpty()
   @Column()
   role!: Roles;
 

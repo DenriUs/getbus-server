@@ -7,26 +7,34 @@ import Bus from '../entity/Bus';
 export default class BusService {
   constructor(
     @InjectRepository(Bus)
-    private readonly busTypeRepository: Repository<Bus>,
+    private readonly busRepository: Repository<Bus>,
   ) {}
 
   async create(bus: Bus): Promise<Bus> {
-    return this.busTypeRepository.save(bus);
+    return this.busRepository.save(bus);
   }
 
   async getById(busId: number): Promise<Bus | undefined> {
-    return this.busTypeRepository.findOne(busId);
+    return this.busRepository.findOne(busId);
   }
 
   async getAll(): Promise<Bus[]> {
-    return this.busTypeRepository.find();
+    return this.busRepository.find({ relations: ['busDriver', 'busType'] });
+  }
+
+  async getBusesWithoutDrivers(): Promise<Bus[]> {
+    return this.busRepository.find({ busDriverId: '' });
   }
 
   async update(bus: Bus): Promise<UpdateResult> {
-    return this.busTypeRepository.update(bus.id, bus);
+    return this.busRepository.update(bus.id, bus);
   }
 
   async deleteById(busId: number): Promise<DeleteResult> {
-    return this.busTypeRepository.delete(busId);
+    return this.busRepository.delete(busId);
+  }
+
+  async isBusNumberUnique(number: number): Promise<boolean> {
+    return await this.busRepository.findOne({ number }) === undefined;
   }
 }

@@ -48,8 +48,8 @@ export default class AuthController {
 
   @ForAuthorized()
   @Get('checkLoginStatus')
-  getTest(): { loginStatus: boolean  } {
-    return { loginStatus: true };
+  checkLoginStatus(): void {
+    return;
   }
 
   private async verifyRegistrationData(user: User) {

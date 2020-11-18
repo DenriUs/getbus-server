@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, NotFoundException, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, NotFoundException, Param, Post } from '@nestjs/common';
 import { ForAuthorized, ForRoles } from '../auth/auth.decorators';
 import Roles from '../auth/roles';
 import BusType from '../entity/BusType';
@@ -36,8 +36,8 @@ export default class BusTypeController {
     await this.busTypeService.update(busType);
   }
 
-  @Post('delete')
-  async delete(@Body() busTypeId: number): Promise<void> {
+  @Post('delete/:busTypeId')
+  async delete(@Param('busTypeId') busTypeId: number): Promise<void> {
     try {
       if (!await this.busTypeService.getById(busTypeId)) {
         throw new NotFoundException();

@@ -14,10 +14,6 @@ export default class Ticket {
 
   @IsNotEmpty()
   @Column()
-  seatsAmount!: number;
-
-  @IsNotEmpty()
-  @Column()
   userId!: string;
   
   @IsNotEmpty()

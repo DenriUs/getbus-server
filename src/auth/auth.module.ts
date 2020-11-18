@@ -6,6 +6,9 @@ import AuthService from './auth.service';
 import JwtStrategy from './jwt.strategy';
 import RolesGuard from './roles.guard';
 import AuthController from './auth.controller';
+import { config } from 'dotenv';
+
+config();
 
 @Module({
   imports: [

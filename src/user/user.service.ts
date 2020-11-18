@@ -32,6 +32,10 @@ export default class UserService {
     return this.userRepository.findOne({ email });
   }
 
+  getUsersInRole(role: Roles): Promise<User[]> {
+    return this.userRepository.find({ role });
+  }
+
   checkPassword(incomingPassword: string, currentPassword: string): Promise<boolean> {
     return compare(incomingPassword, currentPassword);
   }

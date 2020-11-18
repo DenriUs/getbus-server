@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, NotFoundException, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, NotFoundException, Param, Post } from '@nestjs/common';
 import { ForAuthorized, ForRoles } from '../auth/auth.decorators';
 import Roles from '../auth/roles';
 import Bus from '../entity/Bus';
@@ -14,6 +14,9 @@ export default class BusController {
 
   @Post('create')
   async create(@Body() bus: Bus): Promise<void> {
+    if (!await this.busService.isBusNumberUnique(bus.number)) {
+      throw new BadRequestException('Автобус з таким номер вже існує');
+    }
     await this.busService.create(bus);
   }
 
@@ -34,6 +37,16 @@ export default class BusController {
   @Post('update')
   async update(@Body() bus: Bus): Promise<void> {
     await this.busService.update(bus);
+  }
+
+  @Get('checkIfBusNumberIsUnique/:number')
+  async checkIfBusNumberIsUnique(@Param('number') number: number): Promise<boolean> {
+    return await this.busService.isBusNumberUnique(number);
+  }
+
+  @Get('getBusesWithoutDrivers')
+  async getBusesWithoutDrivers(): Promise<Bus[]> {
+    return await this.busService.getBusesWithoutDrivers();
   }
 
   @Post('delete')

@@ -20,9 +20,12 @@ export default class Bus {
   @Column()
   number!: number;
 
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Виберіть тип автобуса' })
   @Column()
   busTypeId!: number;
+
+  @Column({ nullable: true })
+  busDriverId!: string;
 
   @OneToOne(() => User)
   @JoinColumn()
