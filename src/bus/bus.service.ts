@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, IsNull, Not, Repository, UpdateResult } from 'typeorm';
 import Bus from '../entity/Bus';
 
 @Injectable()
@@ -22,8 +22,15 @@ export default class BusService {
     return this.busRepository.find({ relations: ['busDriver', 'busType'] });
   }
 
-  async getBusesWithoutDrivers(): Promise<Bus[]> {
-    return this.busRepository.find({ busDriverId: '' });
+  async getByDriverId(busDriverId: string) {
+    return this.busRepository.findOne({ busDriverId });
+  }
+  
+  async getBusesWithDrivers(): Promise<Bus[]> {
+    return this.busRepository.find({
+      where: { busDriverId: Not(IsNull()) },
+      relations: ['busDriver']
+    });
   }
 
   async update(bus: Bus): Promise<UpdateResult> {

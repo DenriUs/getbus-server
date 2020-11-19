@@ -33,6 +33,7 @@ export default class UserController {
     return userFromRequest.role;
   }
 
+  @ForRoles(Roles.Administrator)
   @Get('getUsersInRole/:role')
   async getUserInRole(@Param('role') role: number): Promise<User[]> {
     return await this.userService.getUsersInRole(role);
@@ -42,12 +43,16 @@ export default class UserController {
   async getBusDriverWithoutBus(): Promise<User[]> {
     const buses = await this.busService.getAll();
     const busDrivers = await this.userService.getUsersInRole(Roles.BusDriver);
-    console.log(buses, busDrivers)
     const driversWithoutBuses = busDrivers.filter((busDriver) => {
       return buses.every((bus) => bus.busDriverId !== busDriver.id)
     });
-    console.log(driversWithoutBuses);
     return driversWithoutBuses;
+  }
+
+  @ForRoles(Roles.Dispatcher)
+  @Get('getBusDriversForTrip')
+  async getBusDriversForTrip(): Promise<User[]> {
+    return (await this.busService.getBusesWithDrivers()).map((bus) => bus.busDriver);
   }
 
   @Post('update')

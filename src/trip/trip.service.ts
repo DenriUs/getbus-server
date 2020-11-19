@@ -19,7 +19,18 @@ export default class TripService {
   }
 
   async getAll(): Promise<Trip[]> {
-    return this.tripRepository.find();
+    return this.tripRepository.find({ relations: ['busDriver'] });
+  }
+
+  async getInProgressTrips(): Promise<Trip[]> {
+    return this.tripRepository.find({ tripState: 'В процесі' });
+  }
+
+  async searchTrips(
+    departureCity: string,
+    arrivalCity: string,
+  ): Promise<Trip[]> {
+    return this.tripRepository.find({ where: { departureCity, arrivalCity }, relations: ['busDriver']});
   }
 
   async update(trip: Trip): Promise<UpdateResult> {

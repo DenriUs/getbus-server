@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, NotFoundException, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, NotFoundException, Param, Post, Query } from '@nestjs/common';
 import Trip from '../entity/Trip';
 import { ForAuthorized } from '../auth/auth.decorators';
 import TripService from './trip.service';
@@ -31,13 +31,27 @@ export default class TripController {
     return await this.tripService.getAll();
   }
 
+  @Get('getInProgressTrips')
+  async getInProgressTrips(): Promise<Trip[]> {
+    return await this.tripService.getInProgressTrips();
+  }
+
+  @Get('searchTrips')
+  async searchTrips(@Query() params: any): Promise<Trip[]> {
+    const dateToSearch = new Date(params.departureDateTime)
+    const trips = await this.tripService.searchTrips(params.departureCity, params.arrivalCity);
+    console.log(trips);
+    return trips.filter((trip) => trip.departureDateTime.getDate() === dateToSearch.getDate()
+      && trip.departureDateTime.getMonth() === dateToSearch.getMonth());
+  }
+
   @Post('update')
   async update(@Body() trip: Trip): Promise<void> {
     await this.tripService.update(trip);
   }
 
-  @Post('delete')
-  async delete(@Body() tripId: number): Promise<void> {
+  @Post('delete/:tripId')
+  async delete(@Param('tripId') tripId: number): Promise<void> {
     try {
       if (!await this.tripService.getById(tripId)) {
         throw new NotFoundException();

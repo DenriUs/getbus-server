@@ -1,6 +1,7 @@
 import { BadRequestException, Body, Controller, Get, NotFoundException, Post } from '@nestjs/common';
 import Ticket from 'src/entity/Ticket';
-import { ForAuthorized } from '../auth/auth.decorators';
+import User from 'src/entity/User';
+import { ForAuthorized, GetUser } from '../auth/auth.decorators';
 import TicketService from './ticket.service';
 
 @ForAuthorized()
@@ -11,7 +12,12 @@ export default class TicketController {
   ) {}
 
   @Post('create')
-  async create(@Body() ticket: Ticket): Promise<void> {
+  async create(
+    @GetUser() user: User,
+    @Body() ticket: Ticket
+  ): Promise<void> {
+    ticket.isChecked = false;
+    ticket.userId = user.id
     await this.ticketService.create(ticket);
   }
 
@@ -22,6 +28,15 @@ export default class TicketController {
       throw new NotFoundException();
     }
     return ticket;
+  }
+
+  @Get('get')
+  async get(@GetUser() user: User): Promise<Ticket[]> {
+    const tickets = await this.ticketService.getAllByUserId(user.id);
+    if (!tickets) {
+      throw new NotFoundException();
+    }
+    return tickets;
   }
 
   @Get('getAllByUserId')

@@ -1,1 +1,1 @@
-export type TripState = 'preparing' | 'waitingForStart' | 'inProgress' | 'completed';
+export type TripState = 'Новий' | 'Підготовка' | 'В процесі' | 'Виконаний';

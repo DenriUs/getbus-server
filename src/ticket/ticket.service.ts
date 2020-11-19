@@ -19,7 +19,7 @@ export default class TicketService {
   }
 
   async getAllByUserId(userId: string): Promise<Ticket[]> {
-    return this.ticketRepository.find({ userId });
+    return this.ticketRepository.find({ where: { userId }, relations: ['user', 'trip'] });
   }
 
   async getAllByTripId(tripId: number): Promise<Ticket[]> {

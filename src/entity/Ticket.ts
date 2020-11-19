@@ -11,10 +11,12 @@ export default class Ticket {
   @IsNotEmpty()
   @Column()
   price!: string;
-
-  @IsNotEmpty()
+  
   @Column()
   userId!: string;
+
+  @Column()
+  isChecked!: boolean;
   
   @IsNotEmpty()
   @Column()

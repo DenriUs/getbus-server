@@ -41,6 +41,7 @@ export default class Trip {
   @Column()
   tripState!: TripState;
 
+  @IsNotEmpty()
   @Column()
   busDriverId!: string;
 

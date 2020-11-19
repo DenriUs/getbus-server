@@ -5,7 +5,6 @@ import AuthModule from '../auth/auth.module';
 import TripModule from 'src/trip/trip.module';
 import TicketModule from 'src/ticket/ticket.module';
 import BusTypeModule from 'src/busType/busType.module';
-import SupportRequestModule from 'src/supportRequest/supportRequest.module';
 import BusModule from 'src/bus/bus.module';
 
 @Module({
@@ -15,7 +14,6 @@ import BusModule from 'src/bus/bus.module';
     UserModule,
     TripModule,
     TicketModule,
-    SupportRequestModule,
     BusTypeModule,
     BusModule,
   ],

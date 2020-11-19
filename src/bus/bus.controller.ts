@@ -5,7 +5,7 @@ import Bus from '../entity/Bus';
 import BusService from './bus.service';
 
 @ForAuthorized()
-@ForRoles(Roles.Administrator)
+@ForRoles(Roles.Administrator, Roles.Dispatcher)
 @Controller('bus')
 export default class BusController {
   constructor(
@@ -34,6 +34,11 @@ export default class BusController {
     return await this.busService.getAll();
   }
 
+  @Get('getByDriverId/:driverId')
+  async getByDriverId(@Param('driverId') driverId: string): Promise<Bus | undefined> {
+    return await this.busService.getByDriverId(driverId);
+  }
+
   @Post('update')
   async update(@Body() bus: Bus): Promise<void> {
     await this.busService.update(bus);
@@ -44,13 +49,8 @@ export default class BusController {
     return await this.busService.isBusNumberUnique(number);
   }
 
-  @Get('getBusesWithoutDrivers')
-  async getBusesWithoutDrivers(): Promise<Bus[]> {
-    return await this.busService.getBusesWithoutDrivers();
-  }
-
-  @Post('delete')
-  async delete(@Body() busId: number): Promise<void> {
+  @Post('delete/:busId')
+  async delete(@Param('busId') busId: number): Promise<void> {
     try {
       if (!await this.busService.getById(busId)) {
         throw new NotFoundException();
